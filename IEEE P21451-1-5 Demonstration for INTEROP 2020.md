@@ -101,13 +101,13 @@ Run the following command as the hello-world routine:
 
 
 ```shell
-snmpget -v2c -c public tcp:happy508.zicp.io:56913 1.3.6.1.2.1.1.1.0
+snmpget -v 2c -c public 47.88.61.169 1.3.6.1.2.1.1.1.0
 ```
 
 If you see something like this:
 
 ```
-iso.3.6.1.2.1.1.1.0 = STRING: "Greetings from 508, Micro-Nano Building, Shanghai Jiao Tong University, Shanghai, P.R.China"
+iso.3.6.1.2.1.1.1.0 = STRING: "Greetings from IEEE P21451-1-5 Working Group, Shanghai Jiao Tong University, Shanghai, China"
 ```
 
 Congratulations! Your machine is now fired up.
