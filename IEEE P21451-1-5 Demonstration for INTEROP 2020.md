@@ -114,7 +114,84 @@ Congratulations! Your machine is now fired up.
 
 ### Windows
 
-...
+
+
+## 2. Access Our Demo Remotely
+
+We expose the following sensors and actuators to remote testers: 
+
+- one temperature sensor
+- one photosensitive sensor
+- one humidifier
+- one lamp
+- and one LCD screen 
+
+From the standpoint of SNMP programs, each of these transducers is seen as a *variable*, either read-only or read/write. Each variable has a unique identifier, called [OID](https://en.wikipedia.org/wiki/Object_identifier). In our example, we put all these variables under a certain branch. Thus, their OIDs have a common prefix: `1.3.6.1.4.1`, which is named `enterprise` and is the parent node of most enterprises and organizations. 
+
+The reset parts of these OIDs are illustrated with this tree view:
+
+```shell
+# Output of `snmptranslate -Tp IEEE-P1451-SIMPLE-DEMO-MIB::sjtu'
++--sjtu(7934)
+   |
+   +--ieeeP1451Project(1451)
+      |
+      +--ieeeP1451Sensor(1)
+      |  |
+      |  +-- -R-- INTEGER   seTemperature(1)
+      |  |        Range: 0..255
+      |  +-- -R-- INTEGER   seLight(2)
+      |           Range: 0..255
+      |
+      +--ieeeP1451Actuator(2)
+         |
+         +-- -RW- EnumVal   acLamp(1)
+         |        Values: off(0), on(1)
+         +-- -RW- EnumVal   acHumidifier(2)
+         |        Values: off(0), on(1)
+         +-- -RW- String    acLcd(3)
+
+```
+
+For example, `acLamp` is the variable standing for the lamp in our demonstration system. It is the first child node (`.1`) of `ieeeP1451Actuator`, who in turn is the second child node (`.2`) of `ieeeP1451Project`, who again is the 1451st child node (`.1451`) of `sjtu`, who is the 7934th child node (`.7934`) of `enterprise` (`1.3.6.1.4.1`). Therefore, the complete OID of `acLamp` is `1.3.6.1.4.1.7934.1451.2.1`.
+
+OIDs, among other attributes of these variables, are specified in the MIB file [IEEE-P1451-SIMPLE-DEMO-MIB.txt](IEEE-P1451-SIMPLE-DEMO-MIB.txt).
+
+Knowing the OIDs, we are now able to access the corresponding transducers using SNMP SET/GET messages.
+
+### Sensors (Read-Only)
+
+```shell
+# Read the current value of the temperature sensor
+snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.1.1.0
+# Read the current value of the photosensitive sensor
+snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.1.2.0
+```
+### Actuators (Read-Write)
+
+```shell
+# Read the current on/off status of the lamp
+snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0
+# Turn on the lamp
+snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0 i 1
+# Turn off the lamp
+snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0 i 0
+
+# Read the current on/off status of the humidifier
+snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0
+# Turn on the humidifier
+snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0 i 1
+# Turn off the humidifier
+snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0 i 0
+
+# Read the current content on the LCD screen
+snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0
+# Change the display content on the LCD screen
+# (It is appreciated if you can leave a message here telling us where you are conducting this test!)
+snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0 s "Hi, I am Rick from universe C-137."
+```
+
+
 
 # Contact
 
