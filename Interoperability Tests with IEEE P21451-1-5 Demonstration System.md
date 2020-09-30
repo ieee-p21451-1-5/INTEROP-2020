@@ -140,6 +140,6 @@ snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0 s "Hi, I am Rick
 
 > **Update of 09/30/20**
 >
-> We have also opened a non-default port `10010` for testing. If you have trouble sending the above messages, try replace the `47.88.61.169` part with `47.88.61.169:10010`.
+> We have also opened a non-default port `10010` for testing. If you have trouble sending the above messages, try replacing the `47.88.61.169` part with `47.88.61.169:10010`.
 >
 
