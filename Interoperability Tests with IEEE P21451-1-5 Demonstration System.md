@@ -42,6 +42,16 @@ iso.3.6.1.2.1.1.1.0 = STRING: "Greetings from IEEE P21451-1-5 Working Group, Sha
 
 Congratulations! Your machine is now fired up.
 
+> **Update of 09/30/20**
+>
+> We have also opened a non-default port `10010` for testing. If you have trouble sending the above message, try this:
+>
+> ```shell
+> snmpget -v 2c -c public 47.88.61.169:10010 1.3.6.1.2.1.1.1.0
+> ```
+
+
+
 ### Windows
 
 (...)
@@ -128,4 +138,8 @@ snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0
 snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0 s "Hi, I am Rick from universe C-137."
 ```
 
+> **Update of 09/30/20**
+>
+> We have also opened a non-default port `10010` for testing. If you have trouble sending the above messages, try replace the `47.88.61.169` part with `47.88.61.169:10010`.
+>
 
