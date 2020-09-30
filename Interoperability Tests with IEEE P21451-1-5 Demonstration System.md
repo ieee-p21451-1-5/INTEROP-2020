@@ -1,4 +1,4 @@
-# Interoperability Tests with IEEE P21451-1-5 Demonstration System
+# Interoperability Tests with IEEE P21451-1-5 Standard's Demonstration System
 
 Author: **Jun Wu**  \<junwuhn@sjtu.edu.cn\>
 
@@ -60,7 +60,7 @@ We expose the following sensors and actuators to remote testers:
 
 Here is a picture of the whole system (still being built):
 
-<img src="demo.jpg" alt="demo.jpg" width="400"/>
+<img src="fig/demo-overall.jpg" alt="demo-overall.jpg" width="400"/>
 
 From the standpoint of SNMP programs, each of these transducers is seen as a *variable*, either read-only or read/write. Each variable has a unique identifier, called [OID](https://en.wikipedia.org/wiki/Object_identifier). In our example, we put all these variables under a certain branch. Thus, their OIDs have a common prefix: `1.3.6.1.4.1`, which is named `enterprise` and is the parent node of most enterprises and organizations. 
 

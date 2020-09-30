@@ -1,4 +1,5 @@
-# IEEE P21451-1-5 Demonstration for INTEROP 2020
+
+# IEEE P21451-1-5 Standard's Demonstration System for INTEROP 2020
 
 >**Abstract: IEEE P21451-1-5 standard specifies a universal and standardized way of accessing and managing Internet of Things (IoT) based on Simple Network Management Protocol (SNMP). In this article, we explain the basic concepts in IEEE P1451, provide an overview of IEEE P21451-1-5 standard and introduce the demonstration system to be presented in INTEROP 2020, including its building blocks, over-all structure and the workflow of IEEE P21451-1-5 in this demonstration system.** 
 
@@ -30,9 +31,9 @@ The main components of the demonstration system are listed below:
 ## 4. Demo Structure
 Combining together all the components introduced in the last section, we obtain the demonstration system’s over-all structure, as shown in the Fig. 1.
 
-![demo.png](demo.png)
+![demo.png](fig/demo.png)
 
-**Fig. 1: IEEE P21451-1-5 Demonstration System** 
+**Fig. 1: IEEE P21451-1-5 Standard's Demonstration System** 
 
 The process of accessing or managing IoT using SNMP goes as follows: Firstly, a client on the network initiates a request that is packed in P1451.1.5 format (that is, “1451.1 over SNMP”) and is sent to NCAP. Secondly, NCAP receives the request message, resolves it, translates it into standardized 1451 commands that can be recognized by TIMs (that is, “calls transducer services”) and then issues the commands to certain TIMs. The transmission in this step can either requires a physical cable between NCAP and TIM (using protocols like UART) or goes over the air (using Wi-Fi, BLE, etc.). Next, TIM responds to the commands by reading a sensor or regulating an actuator’s output, and replies with a response message. At last, the response message goes in reverse as the request message and is sent back to the client.
 
@@ -41,6 +42,10 @@ The process of accessing or managing IoT using SNMP goes as follows: Firstly, a 
 - Project main page of IEEE P21451-1-5 standard:  
 
   https://standards.ieee.org/project/21451-1-5.html
+
+- GitHub main page of IEEE P21451-1-5 standard working group:
+
+  https://github.com/ieee-p21451-1-5
 
 - Hardware specification of Raspberry Pi 3B:
 
@@ -68,136 +73,15 @@ The IEEE P21451-1-5 working group would like to express their very great appreci
 
 [4]	J. Ren, Y. Liu, J. Wu, J. Li and K. Wang, "Smart NCAP supporting Low-Rate DDoS Detection for IEEE 21451-1-5 Internet of Things," 2019 IEEE International Conference on Industrial Cyber Physical Systems (ICPS), Taipei, Taiwan, 2019, pp. 532-535, doi: [10.1109/ICPHYS.2019.8780132](https://doi.org/10.1109/ICPHYS.2019.8780132).
 
+# Access Our Demo Right Now!
 
-
-# Interoperability Tests
-
-## 1. Get Your Hands Dirty!
-
-To get started, choose an SNMP client and install it. In this article, [`net-snmp`](http://www.net-snmp.org/) is used as the example.
-
-### Linux
-
-For some distros, try installing `net-snmp` (or the client only) with the native package manger:
-
-```shell
-# On Debian-based systems:
-sudo apt install snmp
-# On RHEL-based systems:
-sudo yum install net-snmp-utils
-```
-
-<!--- TODO: check the package's availability on different systems -->
-
-Otherwise, you should, unfortunately, build it from source following the steps in [this page](http://www.net-snmp.org/docs/INSTALL.html).
-
-You may want to verify your installation by running:
-
-```shell
-snmpget --version
-```
-
-Run the following command as the hello-world routine:
-
-
-```shell
-snmpget -v 2c -c public 47.88.61.169 1.3.6.1.2.1.1.1.0
-```
-
-If you see something like this:
-
-```
-iso.3.6.1.2.1.1.1.0 = STRING: "Greetings from IEEE P21451-1-5 Working Group, Shanghai Jiao Tong University, Shanghai, China"
-```
-
-Congratulations! Your machine is now fired up.
-
-### Windows
-
-
-
-## 2. Access Our Demo Remotely
-
-We expose the following sensors and actuators to remote testers: 
-
-- one temperature sensor
-- one photosensitive sensor
-- one humidifier
-- one lamp
-- and one LCD screen 
-
-From the standpoint of SNMP programs, each of these transducers is seen as a *variable*, either read-only or read/write. Each variable has a unique identifier, called [OID](https://en.wikipedia.org/wiki/Object_identifier). In our example, we put all these variables under a certain branch. Thus, their OIDs have a common prefix: `1.3.6.1.4.1`, which is named `enterprise` and is the parent node of most enterprises and organizations. 
-
-The reset parts of these OIDs are illustrated with this tree view:
-
-```shell
-# Output of `snmptranslate -Tp IEEE-P1451-SIMPLE-DEMO-MIB::sjtu'
-+--sjtu(7934)
-   |
-   +--ieeeP1451Project(1451)
-      |
-      +--ieeeP1451Sensor(1)
-      |  |
-      |  +-- -R-- INTEGER   seTemperature(1)
-      |  |        Range: 0..255
-      |  +-- -R-- INTEGER   seLight(2)
-      |           Range: 0..255
-      |
-      +--ieeeP1451Actuator(2)
-         |
-         +-- -RW- EnumVal   acLamp(1)
-         |        Values: off(0), on(1)
-         +-- -RW- EnumVal   acHumidifier(2)
-         |        Values: off(0), on(1)
-         +-- -RW- String    acLcd(3)
-
-```
-
-For example, `acLamp` is the variable standing for the lamp in our demonstration system. It is the first child node (`.1`) of `ieeeP1451Actuator`, who in turn is the second child node (`.2`) of `ieeeP1451Project`, who again is the 1451st child node (`.1451`) of `sjtu`, who is the 7934th child node (`.7934`) of `enterprise` (`1.3.6.1.4.1`). Therefore, the complete OID of `acLamp` is `1.3.6.1.4.1.7934.1451.2.1`.
-
-OIDs, among other attributes of these variables, are specified in the MIB file [IEEE-P1451-SIMPLE-DEMO-MIB.txt](IEEE-P1451-SIMPLE-DEMO-MIB.txt).
-
-Knowing the OIDs, we are now able to access the corresponding transducers using SNMP SET/GET messages.
-
-### Sensors (Read-Only)
-
-```shell
-# Read the current value of the temperature sensor
-snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.1.1.0
-# Read the current value of the photosensitive sensor
-snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.1.2.0
-```
-### Actuators (Read-Write)
-
-```shell
-# Read the current on/off status of the lamp
-snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0
-# Turn on the lamp
-snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0 i 1
-# Turn off the lamp
-snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.1.0 i 0
-
-# Read the current on/off status of the humidifier
-snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0
-# Turn on the humidifier
-snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0 i 1
-# Turn off the humidifier
-snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.2.0 i 0
-
-# Read the current content on the LCD screen
-snmpget -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0
-# Change the display content on the LCD screen
-# (It is appreciated if you can leave a message here telling us where you are conducting this test!)
-snmpset -v2c -c public 47.88.61.169 1.3.6.1.4.1.7934.1451.2.3.0 s "Hi, I am Rick from universe C-137."
-```
-
-
+Here is [a detailed tutorial](Interoperability Tests with IEEE P21451-1-5 Demonstration System.md) on how to access the sensors and actuators in our demonstration system, which is located at our laboratory in [Shanghai Jiao Tong University](http://en.sjtu.edu.cn/), Shanghai, China.
 
 # Contact
 
-<img src="bio.png" alt="bio.png" width="200"/>
+<img src="fig/bio.png" alt="bio.png" width="200"/>
 
-**Jun WU**  \<junwuhn@sjtu.edu.cn\> received the Ph.D. degree in information and telecommunication studies from Waseda University, Japan, in 2011. He is currently an Associate Professor with the School of Cyber Security, Shanghai Jiao Tong University, China, where he is also the Vice Director of the National Engineering Laboratory for Information Content Analysis Technology. His research interests include advanced computing, communications and security techniques of software-defined networks, information-centric networks smart grids, and the Internet of Things.
+**Jun Wu**  \<junwuhn@sjtu.edu.cn\> received the Ph.D. degree in information and telecommunication studies from Waseda University, Japan, in 2011. He is currently an Associate Professor with the School of Cyber Security, Shanghai Jiao Tong University, China, where he is also the Vice Director of the National Engineering Laboratory for Information Content Analysis Technology. His research interests include advanced computing, communications and security techniques of software-defined networks, information-centric networks smart grids, and the Internet of Things.
 
 <!---  NAT traversal configuration alternative solution: https://ourcodeworld.com/articles/read/1175/how-to-create-and-configure-your-own-stun-turn-server-with-coturn-in-ubuntu-18-04 -->
 
