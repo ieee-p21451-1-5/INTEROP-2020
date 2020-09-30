@@ -75,7 +75,7 @@ The IEEE P21451-1-5 working group would like to express their very great appreci
 
 # Access Our Demo Right Now!
 
-Here is [a detailed tutorial](Interoperability Tests with IEEE P21451-1-5 Demonstration System.md) on how to access the sensors and actuators in our demonstration system, which is located at our laboratory in [Shanghai Jiao Tong University](http://en.sjtu.edu.cn/), Shanghai, China.
+Here is [a detailed tutorial](https://github.com/ieee-p21451-1-5/INTEROP-2020/blob/master/Interoperability%20Tests%20with%20IEEE%20P21451-1-5%20Demonstration%20System.md) on how to access the sensors and actuators in our demonstration system, which is located at our laboratory in [Shanghai Jiao Tong University](http://en.sjtu.edu.cn/), Shanghai, China.
 
 # Contact
 
